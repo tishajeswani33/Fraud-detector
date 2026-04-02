@@ -23,7 +23,7 @@ MODELS_DIR.mkdir(exist_ok=True)
 
 print("Preparing training data...")
 
-# Embedded sample data — covers common spam/fraud patterns
+# Embedded sample data — covers common spam/fraud patterns and phishing URLs
 spam_texts = [
     "Free entry in 2 a wkly comp to win FA Cup final tkts 21st May 2005.",
     "WINNER!! As a valued network customer you have been selected to receive a £900 prize reward!",
@@ -40,6 +40,17 @@ spam_texts = [
     "URGENT: Your bank account needs verification. Text back YES to avoid suspension immediately.",
     "Free ringtone! Reply to this message and get a free polyphonic ringtone sent to your phone!",
     "You've won a brand new iPhone! Click this link to claim before the offer expires!",
+    # Phishing / malicious URLs
+    "http://secure-update-paypal.com/login",
+    "http://free-iphone-winner.com/claim-now",
+    "https://bankofamerica-verify-acc.com/auth",
+    "http://netflix-billing-update-xyz.com",
+    "http://verify-appleid-secure24.com/login.php",
+    "http://www.fedex-delivery-failed123.com",
+    "https://amazon-prime-reward.com",
+    "http://lucky-winner-drawings.net/prize",
+    "https://irs-tax-refund.org/claim-tax",
+    "http://www.update-chase-online.com",
 ]
 
 ham_texts = [
@@ -58,6 +69,17 @@ ham_texts = [
     "Did you see the game last night? That last minute goal was incredible!",
     "Mom says dinner is at 7. Don't forget to bring the dessert.",
     "Just wanted to check if you received the documents I sent yesterday.",
+    # Legitimate URLs
+    "https://www.google.com",
+    "https://github.com/Antigravity",
+    "https://stackoverflow.com/questions/123",
+    "https://www.wikipedia.org",
+    "https://react.dev/reference/react",
+    "https://paypal.com/login",
+    "https://amazon.com/shop",
+    "https://netflix.com",
+    "https://bankofamerica.com/login",
+    "https://apple.com/store",
 ]
 
 # Duplicate to create more training data

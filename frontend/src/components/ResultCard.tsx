@@ -12,6 +12,10 @@ const FRAUD_SIGNALS = [
   { keyword: /click|call|txt|text back/i, label: 'Action commands' },
   { keyword: /£|\$|cash|money|£\d+|(\d+,\d+)/i, label: 'Monetary bait' },
   { keyword: /congratulations|selected|chosen/i, label: 'False validation' },
+  { keyword: /http|www/i, label: 'Contains Link' },
+  { keyword: /verify|update|secure|account|login/i, label: 'Phishing Bait' },
+  { keyword: /-(update|secure|verify|login)\./i, label: 'Suspicious Domain' },
+  { keyword: /\.xyz|\.net|\.org/i, label: 'Unusual TLD' },
 ]
 
 function detectSignals(text: string) {

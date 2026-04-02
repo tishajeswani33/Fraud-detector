@@ -16,8 +16,13 @@ const SAMPLES: Sample[] = [
     type: 'fraud',
   },
   {
-    label: 'Urgent loan',
-    text: "URGENT: Your account needs verification. Text back YES to receive your approved loan of $10,000 now. Act fast!",
+    label: 'Phishing URL',
+    text: "http://secure-update-paypal.com/login",
+    type: 'fraud',
+  },
+  {
+    label: 'Bank Phishing',
+    text: "https://bankofamerica-verify-acc.com/auth",
     type: 'fraud',
   },
   {
@@ -26,8 +31,8 @@ const SAMPLES: Sample[] = [
     type: 'legit',
   },
   {
-    label: 'Work message',
-    text: "Hi, just a reminder that our team meeting is scheduled for 3pm today in Conference Room B. Please bring your Q3 reports.",
+    label: 'Legit URL',
+    text: "https://www.google.com/search?q=technology",
     type: 'legit',
   },
 ]

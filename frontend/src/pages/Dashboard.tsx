@@ -50,9 +50,9 @@ export function Dashboard() {
   return (
     <div className="max-w-3xl mx-auto py-2">
       <header className="mb-8 animate-fade-in">
-        <h2 className="font-display text-3xl font-bold tracking-tight text-text mb-2">Message Scanner</h2>
+        <h2 className="font-display text-3xl font-bold tracking-tight text-text mb-2">Message & Link Scanner</h2>
         <p className="text-muted text-sm leading-relaxed">
-          Paste any SMS or text message below. Our XGBoost model will assess fraud probability in milliseconds.
+          Paste any SMS, text message, or URL below. Our XGBoost model will assess fraud probability in milliseconds.
         </p>
       </header>
 
@@ -66,7 +66,7 @@ export function Dashboard() {
             value={text}
             onChange={e => setText(e.target.value.slice(0, MAX_CHARS))}
             onKeyDown={handleKeyDown}
-            placeholder="Paste your message here… e.g. 'Congratulations! You won a cash prize…'"
+            placeholder="Paste your message or URL here… e.g. 'http://secure-update-paypal.com/login'"
             rows={5}
             className="w-full bg-void border border-border rounded-xl p-4 text-text text-sm font-body
                        placeholder-muted/40 resize-none transition-colors duration-200
