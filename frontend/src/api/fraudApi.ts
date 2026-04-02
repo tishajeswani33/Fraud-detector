@@ -1,7 +1,9 @@
 /// <reference types="vite/client" />
 import axios, { AxiosError } from 'axios'
 
-const BASE_URL = import.meta.env.VITE_API_URL || '/api'
+const BASE_URL = import.meta.env.DEV
+  ? 'http://localhost:8000'
+  : 'https://fraud-detector-yfnz.onrender.com'
 
 const client = axios.create({
   baseURL: BASE_URL,
