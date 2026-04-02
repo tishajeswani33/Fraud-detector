@@ -1,12 +1,15 @@
 """
 Fraud Detection API — FastAPI Backend
 Serves SMS/text fraud predictions via XGBoost + TF-IDF pipeline.
+Auto-trains model on startup if not found.
 """
 
 import os
 import pickle
 import logging
 import time
+import subprocess
+import sys
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -39,20 +42,33 @@ async def lifespan(app: FastAPI):
     model_path = MODEL_DIR / "model.pkl"
     tfidf_path = MODEL_DIR / "tfidf.pkl"
 
-    for p in (model_path, tfidf_path):
-        if not p.exists():
-            raise RuntimeError(
-                f"Required model file not found: {p}. "
-                "Place model.pkl and tfidf.pkl inside the /models directory."
+    # Auto-train if model files are missing
+    if not model_path.exists() or not tfidf_path.exists():
+        logger.warning("Model files not found — auto-training now...")
+        try:
+            subprocess.run(
+                [sys.executable, "train_sample.py"],
+                check=True,
+                timeout=120,
             )
+            logger.info("Auto-training completed successfully.")
+        except Exception as e:
+            logger.error("Auto-training failed: %s", e)
 
-    with open(model_path, "rb") as f:
-        _model = pickle.load(f)
-    logger.info("model.pkl loaded — type: %s", type(_model).__name__)
+    # Load models (gracefully handle missing files)
+    try:
+        with open(model_path, "rb") as f:
+            _model = pickle.load(f)
+        logger.info("model.pkl loaded — type: %s", type(_model).__name__)
 
-    with open(tfidf_path, "rb") as f:
-        _tfidf = pickle.load(f)
-    logger.info("tfidf.pkl loaded — vocab: %d", len(_tfidf.vocabulary_))
+        with open(tfidf_path, "rb") as f:
+            _tfidf = pickle.load(f)
+        logger.info("tfidf.pkl loaded — vocab: %d", len(_tfidf.vocabulary_))
+    except FileNotFoundError as e:
+        logger.error("Could not load model files: %s", e)
+        logger.error("API will start but predictions will return 503.")
+    except Exception as e:
+        logger.error("Error loading models: %s", e)
 
     yield
 
@@ -68,11 +84,6 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
-
-ALLOW_ORIGINS = os.getenv(
-    "ALLOW_ORIGINS",
-    "http://localhost:3000,http://localhost:5173,https://your-app.vercel.app",
-).split(",")
 
 app.add_middleware(
     CORSMiddleware,
@@ -157,13 +168,11 @@ def _predict(text: str) -> dict:
 
 # ─── Routes ─────────────────────────────────────────────────────────────────
 
-@app.get("/api/", tags=["root"])
 @app.get("/", tags=["root"])
 async def root():
     return {"message": "Fraud Detection API is running. Visit /docs."}
 
 
-@app.get("/api/health", response_model=HealthResponse, tags=["health"])
 @app.get("/health", response_model=HealthResponse, tags=["health"])
 async def health():
     return {
@@ -173,7 +182,6 @@ async def health():
     }
 
 
-@app.post("/api/predict", response_model=PredictResponse, tags=["prediction"])
 @app.post("/predict", response_model=PredictResponse, tags=["prediction"])
 async def predict(body: PredictRequest, request: Request):
     logger.info(
@@ -192,7 +200,6 @@ async def predict(body: PredictRequest, request: Request):
     return PredictResponse(text=body.text, **result)
 
 
-@app.post("/api/predict/batch", response_model=list[PredictResponse], tags=["prediction"])
 @app.post("/predict/batch", response_model=list[PredictResponse], tags=["prediction"])
 async def predict_batch(bodies: list[PredictRequest]):
     """Classify up to 50 messages at once."""
