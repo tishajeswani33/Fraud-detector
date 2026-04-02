@@ -157,11 +157,13 @@ def _predict(text: str) -> dict:
 
 # ─── Routes ─────────────────────────────────────────────────────────────────
 
+@app.get("/api/", tags=["root"])
 @app.get("/", tags=["root"])
 async def root():
     return {"message": "Fraud Detection API is running. Visit /docs."}
 
 
+@app.get("/api/health", response_model=HealthResponse, tags=["health"])
 @app.get("/health", response_model=HealthResponse, tags=["health"])
 async def health():
     return {
@@ -171,6 +173,7 @@ async def health():
     }
 
 
+@app.post("/api/predict", response_model=PredictResponse, tags=["prediction"])
 @app.post("/predict", response_model=PredictResponse, tags=["prediction"])
 async def predict(body: PredictRequest, request: Request):
     logger.info(
@@ -189,6 +192,7 @@ async def predict(body: PredictRequest, request: Request):
     return PredictResponse(text=body.text, **result)
 
 
+@app.post("/api/predict/batch", response_model=list[PredictResponse], tags=["prediction"])
 @app.post("/predict/batch", response_model=list[PredictResponse], tags=["prediction"])
 async def predict_batch(bodies: list[PredictRequest]):
     """Classify up to 50 messages at once."""
