@@ -1,5 +1,6 @@
 import { type PredictResponse } from '../api/fraudApi'
 import { RadialGauge } from './RadialGauge'
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 
 interface ResultCardProps {
   data: PredictResponse
@@ -69,18 +70,81 @@ export function ResultCard({ data }: ResultCardProps) {
         </div>
       </div>
 
-      {/* Gauges */}
-      <div className="flex gap-6 justify-center my-6">
-        <RadialGauge
-          probability={data.fraud_probability}
-          label="Fraud"
-          isFraud={true}
-        />
-        <RadialGauge
-          probability={data.legitimate_probability}
-          label="Legit"
-          isFraud={false}
-        />
+      {/* Visualizations: Gauges + Charts */}
+      <div className="my-8 space-y-8">
+        <div className="flex gap-6 justify-center">
+          <RadialGauge
+            probability={data.fraud_probability}
+            label="Fraud"
+            isFraud={true}
+          />
+          <RadialGauge
+            probability={data.legitimate_probability}
+            label="Legit"
+            isFraud={false}
+          />
+        </div>
+
+        {/* Charts Container */}
+        <div className="grid grid-cols-2 gap-4 h-64 mt-6">
+          <div className="bg-void/50 rounded-xl border border-border/60 p-4 flex flex-col">
+            <h3 className="text-muted text-xs font-mono uppercase tracking-wider mb-2 text-center">Probability Distribution</h3>
+            <div className="flex-1">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={[
+                      { name: 'Fraud', value: Math.round(data.fraud_probability * 100) },
+                      { name: 'Legit', value: Math.round(data.legitimate_probability * 100) }
+                    ]}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={45}
+                    outerRadius={75}
+                    paddingAngle={5}
+                    dataKey="value"
+                    stroke="none"
+                  >
+                    <Cell fill="#ef4444" />
+                    <Cell fill="#22c55e" />
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#1a1f2e', border: '1px solid #2e364f', borderRadius: '8px' }}
+                    itemStyle={{ color: '#e2e8f0', fontSize: '14px', fontFamily: 'monospace' }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          <div className="bg-void/50 rounded-xl border border-border/60 p-4 flex flex-col">
+            <h3 className="text-muted text-xs font-mono uppercase tracking-wider mb-2 text-center">Comparison Bar</h3>
+            <div className="flex-1">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={[
+                    { name: 'Fraud', value: Math.round(data.fraud_probability * 100) },
+                    { name: 'Legit', value: Math.round(data.legitimate_probability * 100) }
+                  ]}
+                  margin={{ top: 10, right: 10, left: -25, bottom: 0 }}
+                  barSize={40}
+                >
+                  <XAxis dataKey="name" stroke="#6b7280" fontSize={11} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#6b7280" fontSize={11} tickLine={false} axisLine={false} />
+                  <Tooltip 
+                    cursor={{fill: 'rgba(255,255,255,0.05)'}}
+                    contentStyle={{ backgroundColor: '#1a1f2e', border: '1px solid #2e364f', borderRadius: '8px' }}
+                    itemStyle={{ color: '#e2e8f0', fontSize: '14px', fontFamily: 'monospace' }}
+                  />
+                  <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                    <Cell fill="#ef4444" />
+                    <Cell fill="#22c55e" />
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Stats row */}
