@@ -43,3 +43,17 @@ export async function checkHealth(): Promise<{
   const { data } = await client.get('/health')
   return data
 }
+
+export async function predictBatch(texts: string[]): Promise<PredictResponse[]> {
+  try {
+    const requests = texts.map(t => ({ text: t }))
+    const { data } = await client.post<PredictResponse[]>('/predict/batch', requests)
+    return data
+  } catch (err) {
+    const axiosErr = err as AxiosError<{ detail: string }>
+    const detail = axiosErr.response?.data?.detail
+    if (detail) throw new Error(detail)
+    if (axiosErr.message) throw new Error(axiosErr.message)
+    throw new Error('Failed to reach fraud detection API (batch)')
+  }
+}
