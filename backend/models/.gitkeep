@@ -1,0 +1,2 @@
+# Place your model.pkl and tfidf.pkl here.
+# These files are gitignored — never commit trained models to source control.
