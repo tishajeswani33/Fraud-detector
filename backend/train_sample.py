@@ -51,6 +51,17 @@ spam_texts = [
     "http://lucky-winner-drawings.net/prize",
     "https://irs-tax-refund.org/claim-tax",
     "http://www.update-chase-online.com",
+    # Hinglish Fraud / Spam
+    "Bhai, 50000 ki lottery jeetne ke liye is link pe click karein. Jaldi karein!",
+    "Aapka bank account block ho gaya hai. Abhi KYC update karne ke liye is link par click karein.",
+    "Free mobile recharge mil raha hai, offer limited time ke liye hai. Turant claim karo!",
+    "Congratulations! Aapko ek gadi gift me mili hai, sirf tax pay karo aur claim karlo.",
+    "Loan approve ho gya hai aapka 50,000 ka. Bina kisi document ke loan paane ke lie yaha click karein.",
+    "Account suspend hone se bachane ke liye fatfat is form ko fill karein: http://spam-form-xyz.com",
+    "Aapki bijli ka connection aaj raat 9 baje kat jaega. Turant is no. par call karein.",
+    "Jio ka 3 mahine ka free recharge claim karne ke liye is link par jayen.",
+    "Apna bank account verify mat kiya toh band ho jayega. Click: http://fake-sbi-update.com",
+    "Cash prize jeeto! Abhi call karo iss number par.",
 ]
 
 ham_texts = [
@@ -80,6 +91,17 @@ ham_texts = [
     "https://netflix.com",
     "https://bankofamerica.com/login",
     "https://apple.com/store",
+    # Hinglish Legitimate
+    "Bhai kaha hai tu? Kitni der me aa raha hai?",
+    "Mummy khana bana rahi hai, tu thodi der me aa jana.",
+    "Kal meeting 10 baje hogi, PPT ready rakhna.",
+    "Bhai movie ke tickets book kardiye, kal milte hain PVR pe.",
+    "Thanks yaar, help karne ke liye. Main thodi der me call karta hu.",
+    "Kya kar rha hai aaj kal? Weekend pe milna hai kya?",
+    "Maine tujhe paise transfer kar diye hain Paytm se, check kar liyo.",
+    "Bhai notes bhej dena kal vale lecture ke agar ho sake to.",
+    "Sham ko khelega kya Valorant? Ping karna free ho kar.",
+    "Sahi bola tune! Chal baad me baat karte hain.",
 ]
 
 # Duplicate to create more training data

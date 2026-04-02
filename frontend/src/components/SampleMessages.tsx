@@ -26,8 +26,18 @@ const SAMPLES: Sample[] = [
     type: 'fraud',
   },
   {
+    label: 'Hinglish Scam',
+    text: "Aapka bank account block ho gaya hai. Abhi KYC update karne ke liye is link par click karein.",
+    type: 'fraud',
+  },
+  {
     label: 'Normal chat',
     text: "Hey, are you free for lunch tomorrow? I was thinking we could try that new Italian place downtown.",
+    type: 'legit',
+  },
+  {
+    label: 'Hinglish Chat',
+    text: "Bhai kaha hai tu? Kitni der me aa raha hai?",
     type: 'legit',
   },
   {

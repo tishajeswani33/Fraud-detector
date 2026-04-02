@@ -16,6 +16,8 @@ const FRAUD_SIGNALS = [
   { keyword: /verify|update|secure|account|login/i, label: 'Phishing Bait' },
   { keyword: /-(update|secure|verify|login)\./i, label: 'Suspicious Domain' },
   { keyword: /\.xyz|\.net|\.org/i, label: 'Unusual TLD' },
+  { keyword: /lottery|jeetne|jaldi|turant/i, label: 'Hinglish Urgency/Prize' },
+  { keyword: /kyc|block|kat jaega/i, label: 'Hinglish Fear Tactic' },
 ]
 
 function detectSignals(text: string) {
