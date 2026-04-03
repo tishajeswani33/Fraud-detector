@@ -46,7 +46,7 @@ export function ResultCard({ data }: ResultCardProps) {
 
   return (
     <div
-      className={`animate-slide-up rounded-2xl border bg-surface p-6 shadow-2xl ${borderColor}`}
+      className={`animate-slide-up rounded-2xl border bg-surface p-4 sm:p-6 shadow-2xl ${borderColor}`}
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
@@ -78,7 +78,7 @@ export function ResultCard({ data }: ResultCardProps) {
 
       {/* Visualizations: Gauges + Charts */}
       <div className="my-8 space-y-8">
-        <div className="flex gap-6 justify-center">
+        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
           <RadialGauge
             probability={data.fraud_probability}
             label="Fraud"
@@ -92,8 +92,8 @@ export function ResultCard({ data }: ResultCardProps) {
         </div>
 
         {/* Charts Container */}
-        <div className="grid grid-cols-2 gap-4 h-64 mt-6">
-          <div className="bg-void/50 rounded-xl border border-border/60 p-4 flex flex-col">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 h-auto sm:h-64 mt-6">
+          <div className="bg-void/50 rounded-xl border border-border/60 p-4 flex flex-col min-h-[200px]">
             <h3 className="text-muted text-xs font-mono uppercase tracking-wider mb-2 text-center">Probability Distribution</h3>
             <div className="flex-1">
               <ResponsiveContainer width="100%" height="100%">
@@ -123,7 +123,7 @@ export function ResultCard({ data }: ResultCardProps) {
             </div>
           </div>
 
-          <div className="bg-void/50 rounded-xl border border-border/60 p-4 flex flex-col">
+          <div className="bg-void/50 rounded-xl border border-border/60 p-4 flex flex-col min-h-[200px]">
             <h3 className="text-muted text-xs font-mono uppercase tracking-wider mb-2 text-center">Comparison Bar</h3>
             <div className="flex-1">
               <ResponsiveContainer width="100%" height="100%">

@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
-import { ShieldAlert, BarChart3, Layers, Settings } from 'lucide-react';
+import { ShieldAlert, BarChart3, Layers, Settings, Menu, X } from 'lucide-react';
 
 export function Layout() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const navItems = [
     { to: '/', label: 'Scanner', icon: ShieldAlert },
     { to: '/batch', label: 'Batch Analysis', icon: Layers },
@@ -11,8 +14,29 @@ export function Layout() {
 
   return (
     <div className="min-h-screen bg-void text-text flex">
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        className="md:hidden fixed top-4 left-4 z-50 w-10 h-10 rounded-xl bg-surface border border-border flex items-center justify-center text-white hover:bg-border transition-colors"
+      >
+        {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+      </button>
+
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div
+          className="md:hidden fixed inset-0 bg-black/60 z-30 backdrop-blur-sm"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-64 border-r border-border bg-surface flex flex-col fixed inset-y-0 z-20">
+      <aside
+        className={`w-64 border-r border-border bg-surface flex flex-col fixed inset-y-0 z-40
+          transition-transform duration-300 ease-in-out
+          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+          md:translate-x-0`}
+      >
         <div className="p-6 flex items-center gap-3 border-b border-border">
           <div className="w-8 h-8 rounded-lg bg-danger/15 flex items-center justify-center">
             <ShieldAlert className="w-5 h-5 text-danger" />
@@ -24,6 +48,7 @@ export function Layout() {
             <NavLink
               key={to}
               to={to}
+              onClick={() => setSidebarOpen(false)}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-4 py-3 rounded-xl font-mono text-sm transition-all duration-200 ${
                   isActive
@@ -43,8 +68,8 @@ export function Layout() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-64 p-8 relative min-h-screen overflow-y-auto">
-        <div className="fixed inset-0 pointer-events-none overflow-hidden ml-64">
+      <main className="flex-1 md:ml-64 p-4 sm:p-6 md:p-8 relative min-h-screen overflow-y-auto pt-16 md:pt-8">
+        <div className="fixed inset-0 pointer-events-none overflow-hidden md:ml-64">
           <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full bg-danger/5 blur-[120px]" />
           <div className="absolute top-40 right-[-200px] w-[600px] h-[600px] rounded-full bg-safe/5 blur-[120px]" />
           <div

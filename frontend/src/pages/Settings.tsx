@@ -12,8 +12,8 @@ export function Settings() {
         <div className="rounded-2xl border border-border bg-panel p-6 shadow-xl">
           <h3 className="text-white font-mono uppercase tracking-widest text-xs mb-4">API Keys</h3>
           <p className="text-muted text-sm mb-4">Use these keys to authenticate API requests from your backend.</p>
-          <div className="flex items-center gap-4 bg-void border border-border rounded-xl p-3">
-            <code className="text-safe text-sm flex-1">fk_live_xxxxxxxxxxxxxxxxxxxxxxxxxxx</code>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 bg-void border border-border rounded-xl p-3">
+            <code className="text-safe text-sm flex-1 break-all">fk_live_xxxxxxxxxxxxxxxxxxxxxxxxxxx</code>
             <button className="px-4 py-2 bg-surface hover:bg-border border border-border rounded-lg text-xs font-mono text-white transition-colors">
               Copy
             </button>
