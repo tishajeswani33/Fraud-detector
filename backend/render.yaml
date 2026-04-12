@@ -10,3 +10,5 @@ services:
         value: ./models
       - key: ALLOW_ORIGINS
         sync: false   # set this in Render dashboard to your Vercel URL
+      - key: MYSQL_URL
+        sync: false   # optionally set your MySQL string here in Render dashboard

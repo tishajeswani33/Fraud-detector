@@ -9,6 +9,7 @@ const MAX_CHARS = 5000
 
 export function Dashboard() {
   const [text, setText] = useState('')
+  const [isAutoScan, setIsAutoScan] = useState(true)
   const [history, setHistory] = useState<PredictResponse[]>([])
   const { state, predict, reset } = usePredict()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -34,6 +35,15 @@ export function Dashboard() {
     textareaRef.current?.focus()
   }
 
+  // Auto-scan logic
+  useEffect(() => {
+    if (!isAutoScan || !text.trim()) return
+    const timer = setTimeout(() => {
+      predict(text.trim())
+    }, 600) // 600ms debounce
+    return () => clearTimeout(timer)
+  }, [text, isAutoScan, predict])
+
   // Add to history on success
   useEffect(() => {
     if (state.status === 'success') {
@@ -57,9 +67,21 @@ export function Dashboard() {
       </header>
 
       <div className="rounded-2xl bg-panel border border-border p-5 shadow-xl">
-        <label className="block text-muted text-xs font-mono uppercase tracking-widest mb-3">
-          Message to analyze
-        </label>
+        <div className="flex items-center justify-between mb-3">
+          <label className="block text-muted text-xs font-mono uppercase tracking-widest">
+            Message to analyze
+          </label>
+          <div className="flex items-center gap-2">
+            <span className={`w-1.5 h-1.5 rounded-full ${isAutoScan ? 'bg-success animate-pulse' : 'bg-muted'}`} />
+            <button 
+              onClick={() => setIsAutoScan(!isAutoScan)}
+              className={`text-[10px] font-bold uppercase tracking-tighter transition-colors duration-200
+                        ${isAutoScan ? 'text-success hover:text-success/80' : 'text-muted hover:text-text'}`}
+            >
+              {isAutoScan ? 'Live Auto-Scan ON' : 'Auto-Scan OFF'}
+            </button>
+          </div>
+        </div>
         <div className="relative">
           <textarea
             ref={textareaRef}

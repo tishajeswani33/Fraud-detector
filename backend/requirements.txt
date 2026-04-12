@@ -4,4 +4,9 @@ pydantic
 scikit-learn
 xgboost
 numpy
+scipy
 python-multipart
+sqlalchemy
+pymysql
+requests
+pandas

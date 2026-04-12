@@ -1,102 +1,55 @@
-# 🛡 FraudScan — AI Fraud Detection App
+# FraudShield v3.0 — Advanced Fraud Detection Suite
 
-Real-time fraud & spam detection powered by **XGBoost + TF-IDF**.
-Backend: **FastAPI** on Render · Frontend: **React + Tailwind** on Vercel
+[![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=flat&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=flat&logo=fastapi)](https://fastapi.tiangolo.com/)
+[![XGBoost](https://img.shields.io/badge/XGBoost-blue?style=flat)](https://xgboost.ai/)
+[![Ensemble](https://img.shields.io/badge/Model-Ensemble-red?style=flat)](https://scikit-learn.org/)
 
-## 📁 Folder Structure
+**FraudShield** is a premium, high-accuracy SMS, text, and link fraud detection platform. It uses an advanced **Ensemble AI model** (XGBoost + Logistic Regression) trained on 60,000+ multi-category samples to identify phishing, social engineering, and banking scams with millisecond latency.
 
+### ✨ Premium Features
+
+*   **⚡ Ensemble Intelligence**: A weighted voting system between two high-performance classifiers for maximum accuracy and calibration.
+*   **🌐 Multi-Language Detection**: Specialized training for English, Hinglish, and symbolic fraud patterns.
+*   **📊 Live Analytics Dashboard**: Real-time visualization of threats, risk distributions, and system latency backed by MySQL/SQLite.
+*   **📱 Universal Response**: Fully mobile and desktop responsive UI with premium glassmorphism aesthetics and micro-animations.
+*   **🛡️ Signal Analysis**: Deep-dive into specific fraud indicators (Urgency, Phishing TLDs, IP URLs, Monetary bait).
+*   **🔄 Hybrid Database**: Automatic failover between MySQL (Production) and SQLite (Local Development).
+
+### 🏗️ Tech Stack
+
+- **Frontend**: React 18, Vite, Tailwind CSS, Recharts, Lucide Icons.
+- **Backend**: FastAPI (Python), SQLAlchemy, SQLModel, Uvicorn.
+- **Machine Learning**: Scikit-Learn, XGBoost, Scipy (TF-IDF Vectorization).
+- **Database**: MySQL / SQLite.
+
+### 🚀 Getting Started
+
+#### 1. Clone & Install
+```bash
+git clone https://github.com/tishajeswani33/fraud-detector.git
+cd fraud-detector
 ```
-fraud-detection/
-├── backend/
-│   ├── main.py              ← FastAPI app (POST /predict)
-│   ├── requirements.txt     ← Python dependencies
-│   ├── render.yaml          ← Render deployment config
-│   ├── model.pkl            ← YOU MUST ADD THIS
-│   ├── tfidf.pkl            ← YOU MUST ADD THIS
-│   └── .env.example
-└── frontend/
-    ├── src/
-    │   ├── App.jsx
-    │   ├── main.jsx
-    │   ├── index.css
-    │   ├── components/
-    │   │   ├── GaugeChart.jsx
-    │   │   ├── ResultPanel.jsx
-    │   │   └── SampleMessages.jsx
-    │   ├── hooks/usePredict.js
-    │   └── utils/api.js
-    ├── index.html
-    ├── package.json
-    ├── vite.config.js
-    ├── tailwind.config.js
-    └── vercel.json
-```
 
-## ⚙️ Local Setup
-
-### Backend
+#### 2. Backend Setup
 ```bash
 cd backend
-python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
-# Copy model.pkl and tfidf.pkl into backend/
+# (Optional) Set MYSQL_URL in .env
+python train_sample.py  # Trains the full v3.0 model
 uvicorn main:app --reload --port 8000
 ```
-API docs → http://localhost:8000/docs
 
-### Frontend
+#### 3. Frontend Setup
 ```bash
 cd frontend
 npm install
-cp .env.example .env.local   # points to localhost:8000
 npm run dev
-# → http://localhost:5173
 ```
 
-## 🔌 API
+### 📈 Future Roadmap
+- [ ] Real-time browser extension integration
+- [ ] Support for image-based OCR fraud detection
+- [ ] User-contributed threat database
 
-### POST /predict
-```json
-// Request
-{ "text": "Congrats! You won $1000. Click now!" }
-
-// Response
-{
-  "label": "fraud",
-  "fraud_probability": 0.9412,
-  "confidence": 0.9412,
-  "model_name": "sms_spam_model",
-  "model_accuracy": 0.9665
-}
-```
-
-## 🚀 Deployment
-
-### Backend → Render
-1. Push to GitHub (include model.pkl + tfidf.pkl)
-2. New Web Service → Root: `backend`
-3. Build: `pip install -r requirements.txt`
-4. Start: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-5. Env var: `ALLOWED_ORIGINS=https://your-app.vercel.app`
-
-### Frontend → Vercel
-1. New Project → Root: `frontend`
-2. Env var: `VITE_API_URL=https://your-render-app.onrender.com`
-3. Deploy
-
-## 🤖 Model Files
-
-```python
-# Retrain snippet
-from sklearn.feature_extraction.text import TfidfVectorizer
-from xgboost import XGBClassifier
-import pickle
-
-tfidf = TfidfVectorizer(max_features=5000)
-X = tfidf.fit_transform(texts)
-model = XGBClassifier(n_estimators=200, max_depth=6)
-model.fit(X, labels)
-
-pickle.dump(tfidf, open('tfidf.pkl', 'wb'))
-pickle.dump(model, open('model.pkl', 'wb'))
-```
+Built with ❤️ for a safer web.
