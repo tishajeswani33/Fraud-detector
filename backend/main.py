@@ -23,7 +23,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, field_validator
 from scipy.sparse import hstack, csr_matrix
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, RedirectResponse
 
 from database import init_db, log_prediction_to_db, get_stats, _db_mode
 
@@ -437,3 +437,7 @@ if FRONTEND_DIST.exists():
             return FileResponse(index_file)
             
         return {"detail": "Frontend build not found"}
+else:
+    @app.get("/", include_in_schema=False)
+    async def fallback_root():
+        return RedirectResponse(url="/docs")
