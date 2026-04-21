@@ -297,13 +297,18 @@ def _predict(text: str) -> dict:
         # Heuristic boost for accurate boundary cases
         signals_detected = _detect_signals(text)
         if signals_detected:
-            # Dynamic boost based on signals, allowing the model to override false negatives
-            boost = len(signals_detected) * 0.12
-            if fraud_prob > 0.05: # only boost if it's not absolutely unmistakably zero 
-                fraud_prob = min(0.99, fraud_prob + boost)
-            elif len(signals_detected) >= 2:
-                # strongly suspicious even if base model says very low
-                fraud_prob = min(0.99, fraud_prob + boost)
+            # High-risk signal multiplier
+            boost = 0.0
+            for sig in signals_detected:
+                # Give higher boost to inherently suspicious signals
+                if "Urgency" in sig or "Prize" in sig or "Suspicious TLD" in sig or "Phishing Bait" in sig or "OTP" in sig:
+                    boost += 0.25
+                elif "Money" in sig or "Impersonation" in sig or "Crypto" in sig:
+                    boost += 0.20
+                else:
+                    boost += 0.10
+                    
+            fraud_prob = min(0.99, fraud_prob + boost)
         
         legit_prob = 1.0 - fraud_prob
         version    = _bundle.get("version", "3.0")
