@@ -264,10 +264,25 @@ class HealthResponse(BaseModel):
     model_version: Optional[str]
 
 
+import socket
+from urllib.parse import urlparse
+
 # ─── Prediction Core ────────────────────────────────────────────
 
 def _detect_signals(text: str) -> list[str]:
     return [label for pat, label in SIGNAL_PATTERNS if pat.search(text)]
+
+def _check_domain_exists(url: str) -> bool:
+    try:
+        if not url.startswith('http'):
+            url = 'http://' + url
+        domain = urlparse(url).netloc.split(':')[0]
+        if not domain:
+            return True
+        socket.gethostbyname(domain)
+        return True
+    except socket.error:
+        return False
 
 
 def _predict(text: str) -> dict:
@@ -294,14 +309,27 @@ def _predict(text: str) -> dict:
 
         fraud_prob = float(0.7 * p_xgb[fi] + 0.3 * p_lr[fi])
         
+        # Check for non-existent domains (very strong phishing indicator)
+        extracted_urls = URL_RE.findall(text)
+        dead_link_found = False
+        for url in extracted_urls:
+            if not _check_domain_exists(url):
+                dead_link_found = True
+                break
+                
         # Heuristic boost for accurate boundary cases
         signals_detected = _detect_signals(text)
+        if dead_link_found:
+            signals_detected.append("Dead/Fake Domain")
+            
         if signals_detected:
             # High-risk signal multiplier
             boost = 0.0
             for sig in signals_detected:
                 # Give higher boost to inherently suspicious signals
-                if "Urgency" in sig or "Prize" in sig or "Suspicious TLD" in sig or "Phishing Bait" in sig or "OTP" in sig:
+                if "Dead/Fake Domain" in sig:
+                    boost += 0.40
+                elif "Urgency" in sig or "Prize" in sig or "Suspicious TLD" in sig or "Phishing Bait" in sig or "OTP" in sig:
                     boost += 0.25
                 elif "Money" in sig or "Impersonation" in sig or "Crypto" in sig:
                     boost += 0.20
