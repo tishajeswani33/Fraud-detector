@@ -76,7 +76,7 @@ export async function checkHealth(): Promise<HealthResponse> {
 }
 
 export async function getAnalytics(): Promise<AnalyticsResponse> {
-  const { data } = await client.get<AnalyticsResponse>('analytics')
+  const { data } = await client.get<AnalyticsResponse>('system-metrics')
   return data
 }
 

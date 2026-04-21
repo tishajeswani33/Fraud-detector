@@ -423,7 +423,7 @@ async def predict(body: PredictRequest, request: Request, background_tasks: Back
     return PredictResponse(text=body.text, **result)
 
 
-@app.get("/api/analytics", tags=["analytics"])
+@app.get("/api/system-metrics", tags=["analytics"])
 async def analytics_stats():
     """Get high-level statistics from the database for the analytics dashboard."""
     stats = get_stats()
