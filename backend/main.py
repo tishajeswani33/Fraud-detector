@@ -309,38 +309,6 @@ def _predict(text: str) -> dict:
             fi = classes.index(1)
 
         fraud_prob = float(0.7 * p_xgb[fi] + 0.3 * p_lr[fi])
-        
-        # Check for non-existent domains (very strong phishing indicator)
-        extracted_urls = URL_RE.findall(text)
-        dead_link_found = False
-        for url in extracted_urls:
-            if not _check_domain_exists(url):
-                dead_link_found = True
-                break
-                
-        # Heuristic boost for accurate boundary cases
-        signals_detected = _detect_signals(text)
-        if dead_link_found:
-            signals_detected.append("Dead/Fake Domain")
-            
-        if signals_detected:
-            # High-risk signal multiplier
-            boost = 0.0
-            for sig in signals_detected:
-                # Give higher boost to inherently suspicious signals
-                if "Explicit Fraud" in sig:
-                    boost += 0.60
-                elif "Dead/Fake Domain" in sig:
-                    boost += 0.40
-                elif "Urgency" in sig or "Prize" in sig or "Suspicious TLD" in sig or "Phishing Bait" in sig or "OTP" in sig:
-                    boost += 0.25
-                elif "Money" in sig or "Impersonation" in sig or "Crypto" in sig:
-                    boost += 0.20
-                else:
-                    boost += 0.10
-                    
-            fraud_prob = min(0.99, fraud_prob + boost)
-        
         legit_prob = 1.0 - fraud_prob
         version    = _bundle.get("version", "3.0")
 
@@ -361,6 +329,37 @@ def _predict(text: str) -> dict:
         version    = "1.0-legacy"
     else:
         raise HTTPException(status_code=503, detail="Models not loaded yet. Try again shortly.")
+
+    # Check for non-existent domains (very strong phishing indicator)
+    extracted_urls = URL_RE.findall(text)
+    dead_link_found = False
+    for url in extracted_urls:
+        if not _check_domain_exists(url):
+            dead_link_found = True
+            break
+            
+    # Heuristic boost for accurate boundary cases (applies to ALL models)
+    signals_detected = _detect_signals(text)
+    if dead_link_found:
+        signals_detected.append("Dead/Fake Domain")
+
+    if signals_detected:
+        # High-risk signal multiplier
+        boost = 0.0
+        for sig in signals_detected:
+            if "Explicit Fraud" in sig:
+                boost += 0.95  # Absolute certainty
+            elif "Dead/Fake Domain" in sig:
+                boost += 0.50
+            elif "Urgency" in sig or "Prize" in sig or "Suspicious TLD" in sig or "Phishing Bait" in sig or "OTP" in sig:
+                boost += 0.35
+            elif "Money" in sig or "Impersonation" in sig or "Crypto" in sig:
+                boost += 0.25
+            else:
+                boost += 0.15
+                
+        fraud_prob = min(0.99, fraud_prob + boost)
+        legit_prob = 1.0 - fraud_prob
 
     elapsed_ms = (time.perf_counter() - t0) * 1000
     label = "fraud" if fraud_prob >= 0.5 else "legitimate"
