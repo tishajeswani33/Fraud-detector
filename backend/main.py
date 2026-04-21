@@ -81,6 +81,7 @@ SIGNAL_PATTERNS = [
     (re.compile(r"limited time|expires in|act now|hurry", re.I), "Artificial Scarcity/Urgency"),
     (re.compile(r"bitcoing|crypto|wallet|blockchain|ethereum", re.I), "Crypto Scam Bait"),
     (re.compile(r"gift card|voucher|cashback|refund", re.I), "Financial Bait"),
+    (re.compile(r"\b(fraud|scam|scammer|phishing|fake|hack)\b", re.I), "Explicit Fraud/Scam Keyword"),
 ]
 
 # ─── Handcrafted Feature Extractor (matches training) ───────────
@@ -327,7 +328,9 @@ def _predict(text: str) -> dict:
             boost = 0.0
             for sig in signals_detected:
                 # Give higher boost to inherently suspicious signals
-                if "Dead/Fake Domain" in sig:
+                if "Explicit Fraud" in sig:
+                    boost += 0.60
+                elif "Dead/Fake Domain" in sig:
                     boost += 0.40
                 elif "Urgency" in sig or "Prize" in sig or "Suspicious TLD" in sig or "Phishing Bait" in sig or "OTP" in sig:
                     boost += 0.25
